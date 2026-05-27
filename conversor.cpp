@@ -1,273 +1,825 @@
 #include <iostream>
 #include <cmath>
+#include <string>
+
 using namespace std;
 
-// CONVERTER DECIMAL --> BINÁRIO/OCTAL/HEXADECIAL
+// ======================================================
+// DECIMAL -> BINÁRIO/OCTAL/HEXADECIMAL (PARTE INTEIRA)
+// ======================================================
 
-	void decimalParaBinario(long int numero){
-		if(numero != 0){
-			decimalParaBinario(numero/2);
-			cout << numero % 2;		}
-	}
+string decimalParaBinario(long int numero){
 
-	void decimalParaOctal(long int numero){
-		if(numero != 0 ){
-			decimalParaOctal(numero/8);
-			cout << numero % 8;
-		}
-	}
+    if(numero == 0){
+        return "";
+    }
 
-	void decimalParaHexadecimal(long int numero){
-		
-		if(numero != 0){
-			decimalParaHexadecimal(numero/16);
-		
-			int resto = numero % 16;
-
-			if(resto < 10){
-				cout << resto;
-			}
-			else{
-				char letra = 'A' + (resto - 10);
-				cout << letra;
-			}
-		}
-	}
-
-// CONVERTER BINÁRIO/OCTAL/HEXADECIAL --> DECIMAL
-
-void binarioParaDecimal(int binario){
-	if(binario == 0){
-		cout << 0;
-		
-	}else{
-
-	int decimal = 0;
-	int base = 1;
-
-	while(binario > 0){
-		int digito = binario % 10;
-		decimal += digito * base;
-		base *= 2;
-		binario /= 10;
-	}
-
-	cout << decimal;
-	}
+    return decimalParaBinario(numero / 2) + char((numero % 2) + '0');
 }
 
-void octalParaDecimal(int octal){
-	if(octal == 0){
-		cout << 0;
-		
-	}else{
+string decimalParaOctal(long int numero){
 
-	int decimal = 0;
-	int base = 1;
+    if(numero == 0){
+        return "";
+    }
 
-	while(octal > 0){
-		int digito = octal % 10;
-		decimal += digito * base;
-		base *= 8;
-		octal /= 10;
-	}
-
-	cout << decimal;
-	}
+    return decimalParaOctal(numero / 8) + char((numero % 8) + '0');
 }
 
-void hexadecimalParaDecimal(string hexadecimal){
-	if(hexadecimal == "0"){
-		cout << 0;
-	}
-	else{
-	int decimal = 0;
-	int base = 1;
+string decimalParaHexadecimal(long int numero){
 
-	for(int i = hexadecimal.size() - 1; i >= 0; --i){
-		char digito = hexadecimal[i];
-		int valor = 0;
+    if(numero == 0){
+        return "";
+    }
 
-		if(digito >= '0' && digito <= '9') {
-			valor = digito - '0';
-		}
-		else if(digito >= 'A' && digito <= 'F'){
-			valor = digito - 'A' + 10;
-		}
-		else if(digito >= 'a' && digito <= 'f') {
-			valor = digito - 'a' + 10;
-		}
-		decimal += valor * base;
-		base *= 16;
-	}
-	cout << decimal;
-	}
+    int resto = numero % 16;
+
+    char digito;
+
+    if(resto < 10){
+        (digito = resto + '0');
+    }
+    else{
+        digito = 'A' + (resto - 10);
+    }
+
+    return decimalParaHexadecimal(numero / 16) + digito;
 }
 
+// ======================================================
+// BINÁRIO/OCTAL/HEXADECIMAL -> DECIMAL (PARTE INTEIRA)
+// ======================================================
 
-// CONVERTER BINÁRIO <--> OCTAL E BINÁRIO <--> HEXADECIMAL SEM PASSAR PELO DECIMAL
+string binarioParaDecimal(string binario){
 
-void binarioParaOctal(string binario){
+    int decimal = 0;
+    int posicao = 0;
+
+    for(int i = binario.size() - 1; i >= 0; i--){
+
+        decimal += (binario[i] - '0') * pow(2, posicao);
+
+        posicao++;
+    }
+
+    return to_string(decimal);
+}
+
+string octalParaDecimal(string octal){
+
+    int decimal = 0;
+    int posicao = 0;
+
+    for(int i = octal.size() - 1; i >= 0; i--){
+
+        decimal += (octal[i] - '0') * pow(8, posicao);
+
+        posicao++;
+    }
+
+    return to_string(decimal);
+}
+
+string hexadecimalParaDecimal(string hexadecimal){
+
+    int decimal = 0;
+    int base = 1;
+
+    for(int i = hexadecimal.size() - 1; i >= 0; i--){
+
+        char digito = hexadecimal[i];
+
+        int valor = 0;
+
+        if(digito >= '0' && digito <= '9'){
+            valor = digito - '0';
+        }
+        else if(digito >= 'A' && digito <= 'F'){
+            valor = digito - 'A' + 10;
+        }
+        else if(digito >= 'a' && digito <= 'f'){
+            valor = digito - 'a' + 10;
+        }
+
+        decimal += valor * base;
+
+        base *= 16;
+    }
+
+    return to_string(decimal);
+}
+
+// ======================================================
+// BINÁRIO <-> OCTAL / HEXADECIMAL
+// ======================================================
+
+string binarioParaOctal(string binario){
 
     while(binario.size() % 3 != 0){
         binario = "0" + binario;
     }
 
+    string octal = "";
+
     for(int i = 0; i < binario.size(); i += 3){
 
-        int octal =
+        int valor =
         (binario[i] - '0') * 4 +
-        (binario[i+1] - '0') * 2 +
-        (binario[i+2] - '0');
+        (binario[i + 1] - '0') * 2 +
+        (binario[i + 2] - '0');
 
-        cout << octal;
+        octal += char(valor + '0');
     }
+
+    return octal;
 }
 
+// CORREÇÃO: Nova função necessária para a parte fracionária (adiciona zeros à direita)
+string binarioFracionarioParaOctal(string binario){
 
-string octalParaBinario(string octal) {
+    while(binario.size() % 3 != 0){
+        binario = binario + "0"; // Zeros à direita na fração!
+    }
+
+    string octal = "";
+
+    for(int i = 0; i < binario.size(); i += 3){
+
+        int valor =
+        (binario[i] - '0') * 4 +
+        (binario[i + 1] - '0') * 2 +
+        (binario[i + 2] - '0');
+
+        octal += char(valor + '0');
+    }
+
+    return octal;
+}
+
+string octalParaBinario(string octal){
 
     string binario = "";
 
-    if(octal != "") {
+    for(int i = 0; i < octal.size(); i++){
 
-        for(int i = 0; i < octal.size(); i++){
+        int digito = octal[i] - '0';
 
-            int digito = octal[i] - '0';
-
-            if(digito == 0) binario += "000";
-            if(digito == 1) binario += "001";
-            if(digito == 2) binario += "010";
-            if(digito == 3) binario += "011";
-            if(digito == 4) binario += "100";
-            if(digito == 5) binario += "101";
-            if(digito == 6) binario += "110";
-            if(digito == 7) binario += "111";
-        }
-    }
-    else{
-        return "0";
+        if(digito == 0) binario += "000";
+        if(digito == 1) binario += "001";
+        if(digito == 2) binario += "010";
+        if(digito == 3) binario += "011";
+        if(digito == 4) binario += "100";
+        if(digito == 5) binario += "101";
+        if(digito == 6) binario += "110";
+        if(digito == 7) binario += "111";
     }
 
     return binario;
 }
 
-void binarioParaHexadecimal(string binario){
+string binarioParaHexadecimal(string binario){
 
     while(binario.size() % 4 != 0){
         binario = "0" + binario;
     }
 
+    string hexadecimal = "";
+
     for(int i = 0; i < binario.size(); i += 4){
 
-        int hexadecimal =
+        int valor =
         (binario[i] - '0') * 8 +
-        (binario[i+1] - '0') * 4 +
-        (binario[i+2] - '0') * 2 +
-        (binario[i+3] - '0');
+        (binario[i + 1] - '0') * 4 +
+        (binario[i + 2] - '0') * 2 +
+        (binario[i + 3] - '0');
 
-        if(hexadecimal >= 10 && hexadecimal <= 15){
-            char letra=('A' + (hexadecimal - 10));
-			cout << letra;
+        if(valor < 10){
+            hexadecimal += char(valor + '0');
         }
         else{
-            cout << hexadecimal;
+            hexadecimal += char('A' + (valor - 10));
         }
     }
+
+    return hexadecimal;
 }
 
-void hexadecimalParaBinario(string hexadecimal){
-	string binario = "";
-	if(hexadecimal != ""){
-    	for(int i = 0; i < hexadecimal.size(); i++){
+// CORREÇÃO: Nova função necessária para a parte fracionária (adiciona zeros à direita)
+string binarioFracionarioParaHexadecimal(string binario){
 
-        	if(hexadecimal[i] == '0') binario += "0000";
-        	if(hexadecimal[i] == '1') binario += "0001";
-        	if(hexadecimal[i] == '2') binario += "0010";
-        	if(hexadecimal[i] == '3') binario += "0011";
-        	if(hexadecimal[i] == '4') binario += "0100";
-        	if(hexadecimal[i] == '5') binario += "0101";
-        	if(hexadecimal[i] == '6') binario += "0110";
-        	if(hexadecimal[i] == '7') binario += "0111";
-        	if(hexadecimal[i] == '8') binario += "1000";
-        	if(hexadecimal[i] == '9') binario += "1001";
+    while(binario.size() % 4 != 0){
+        binario = binario + "0"; // Zeros à direita na fração!
+    }
 
-        	if(hexadecimal[i] == 'A' || hexadecimal[i] == 'a') binario += "1010";
-        	if(hexadecimal[i] == 'B' || hexadecimal[i] == 'b') binario += "1011";
-        	if(hexadecimal[i] == 'C' || hexadecimal[i] == 'c') binario += "1100";
-        	if(hexadecimal[i] == 'D' || hexadecimal[i] == 'd') binario += "1101";
-        	if(hexadecimal[i] == 'E' || hexadecimal[i] == 'e') binario += "1110";
-        	if(hexadecimal[i] == 'F' || hexadecimal[i] == 'f') binario += "1111";
-    	}
-	}
-	else cout << 0;
+    string hexadecimal = "";
 
-    cout << binario;
+    for(int i = 0; i < binario.size(); i += 4){
+
+        int valor =
+        (binario[i] - '0') * 8 +
+        (binario[i + 1] - '0') * 4 +
+        (binario[i + 2] - '0') * 2 +
+        (binario[i + 3] - '0');
+
+        if(valor < 10){
+            hexadecimal += char(valor + '0');
+        }
+        else{
+            hexadecimal += char('A' + (valor - 10));
+        }
+    }
+
+    return hexadecimal;
 }
 
+string hexadecimalParaBinario(string hexadecimal){
 
-// COVERTER OCTAL <--> HEXADECIMAL
+    string binario = "";
 
-void octalParaHexadecimal(string octal){
-	
-	string binario = octalParaBinario(octal);
-	binarioParaHexadecimal(binario);
+    for(int i = 0; i < hexadecimal.size(); i++){
+
+        char c = hexadecimal[i];
+
+        if(c == '0') binario += "0000";
+        if(c == '1') binario += "0001";
+        if(c == '2') binario += "0010";
+        if(c == '3') binario += "0011";
+        if(c == '4') binario += "0100";
+        if(c == '5') binario += "0101";
+        if(c == '6') binario += "0110";
+        if(c == '7') binario += "0111";
+        if(c == '8') binario += "1000";
+        if(c == '9') binario += "1001";
+
+        if(c == 'A' || c == 'a') binario += "1010";
+        if(c == 'B' || c == 'b') binario += "1011";
+        if(c == 'C' || c == 'c') binario += "1100";
+        if(c == 'D' || c == 'd') binario += "1101";
+        if(c == 'E' || c == 'e') binario += "1110";
+        if(c == 'F' || c == 'f') binario += "1111";
+    }
+
+    return binario;
 }
 
-void decimalParaOctal(int decimal){
+// ======================================================
+// OCTAL <-> HEXADECIMAL
+// ======================================================
+
+string octalParaHexadecimal(string octal){
+
+    string binario = octalParaBinario(octal);
+
+    return binarioParaHexadecimal(binario);
+}
+
+string hexadecimalParaOctal(string hexadecimal){
+
+    string binario = hexadecimalParaBinario(hexadecimal);
+
+    return binarioParaOctal(binario);
+}
+
+// ======================================================
+// VALIDAÇÃO
+// ======================================================
+
+bool validarEntrada(string entrada, int base){
+
+    for(int i = 0; i < entrada.size(); i++){
+
+        char c = entrada[i];
+
+        if(base == 2){
+
+            if(c != '0' && c != '1'){
+                return false;
+            }
+        }
+
+        else if(base == 8){
+
+            if(c < '0' || c > '7'){
+                return false;
+            }
+        }
+
+        else if(base == 16){
+
+            if(!((c >= '0' && c <= '9') ||
+                 (c >= 'A' && c <= 'F') ||
+                 (c >= 'a' && c <= 'f'))){
+
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// ======================================================
+// FRAÇÕES DECIMAIS -> OUTRAS BASES
+// ======================================================
+
+string fracDecimalParaBinario(long double fracao){
+
+    string resultado = "";
+
+    int precisao = 16;
+
+    while(fracao > 0 && precisao > 0){
+
+        fracao *= 2;
+
+        int bit = (int)fracao;
+
+        resultado += char(bit + '0');
+
+        fracao -= bit;
+
+        precisao--;
+    }
+
+    return resultado;
+}
+
+string fracDecimalParaOctal(long double fracao){
+
+    string resultado = "";
+
+    int precisao = 16;
+
+    while(fracao > 0 && precisao > 0){
+
+        fracao *= 8;
+
+        int digito = (int)fracao;
+
+        resultado += char(digito + '0');
+
+        fracao -= digito;
+
+        precisao--;
+    }
+
+    return resultado;
+}
+
+string fracDecimalParaHexadecimal(long double fracao){
+
+    string resultado = "";
+
+    int precisao = 16;
+
+    while(fracao > 0 && precisao > 0){
+
+        fracao *= 16;
+
+        int valor = (int)fracao;
+
+        if(valor < 10){
+            resultado += char(valor + '0');
+        }
+        else{
+            resultado += char('A' + (valor - 10));
+        }
+
+        fracao -= valor;
+
+        precisao--;
+    }
+
+    return resultado;
+}
+
+// ======================================================
+// FRAÇÕES -> DECIMAL
+// ======================================================
+
+double fracBinarioParaDecimal(string fracao){
+
+    double decimal = 0;
+
+    for(int i = 0; i < fracao.size(); i++){
+
+        int bit = fracao[i] - '0';
+
+        decimal += bit * pow(2, -(i + 1));
+    }
+
+    return decimal;
+}
+
+double fracOctalParaDecimal(string fracao){
+
+    double decimal = 0;
+
+    for(int i = 0; i < fracao.size(); i++){
+
+        int digito = fracao[i] - '0';
+
+        decimal += digito * pow(8, -(i + 1));
+    }
+
+    return decimal;
+}
+
+double fracHexadecimalParaDecimal(string fracao){
+
+    double decimal = 0;
+
+    for(int i = 0; i < fracao.size(); i++){
+
+        char digito = fracao[i];
+
+        int valor;
+
+        if(digito >= '0' && digito <= '9'){
+            valor = digito - '0';
+        }
+        else if(digito >= 'A' && digito <= 'F'){
+            valor = digito - 'A' + 10;
+        }
+        else{
+            valor = digito - 'a' + 10;
+        }
+
+        decimal += valor * pow(16, -(i + 1));
+    }
+
+    return decimal;
+}
+
+// ======================================================
+// BINARIO -> OCTAL/HEXADECIMAL (FRAÇÃO)
+// ======================================================
+
+string fracBinarioParaOctal(string binario){
+
+    while(binario.size() % 3 != 0){
+        binario += "0";
+    }
+
+    return binarioParaOctal(binario);
+}
+
+string fracBinarioParaHexadecimal(string binario){
+
+    while(binario.size() % 4 != 0){
+        binario += "0";
+    }
+
+    return binarioParaHexadecimal(binario);
+}
+
+// ======================================================
+// FUNÇÕES COMPLETAS
+// ======================================================
+
+string decimalCompletoParaBinario(double decimal){
+
+    long int parteInteira = (long int)decimal;
+
+    double parteFracionaria = decimal - parteInteira;
+
+    string resultado;
+
+    if(parteInteira == 0){
+        resultado = "0";
+    }
+    else{
+        resultado = decimalParaBinario(parteInteira);
+    }
+
+    if(parteFracionaria > 0){
+
+        resultado += ".";
+
+        resultado += fracDecimalParaBinario(parteFracionaria);
+    }
+
+    return resultado;
+}
+
+string decimalCompletoParaOctal(double decimal){
+
+    long int parteInteira = (long int)decimal;
+
+    double parteFracionaria = decimal - parteInteira;
+
+    string resultado;
+
+    if(parteInteira == 0){
+        resultado = "0";
+    }
+    else{
+        resultado = decimalParaOctal(parteInteira);
+    }
+
+    if(parteFracionaria > 0){
+
+        resultado += ".";
+
+        resultado += fracDecimalParaOctal(parteFracionaria);
+    }
+
+    return resultado;
+}
+
+string decimalCompletoParaHexadecimal(double decimal){
+
+    long int parteInteira = (long int)decimal;
+
+    double parteFracionaria = decimal - parteInteira;
+
+    string resultado;
+
+    if(parteInteira == 0){
+        resultado = "0";
+    }
+    else{
+        resultado = decimalParaHexadecimal(parteInteira);
+    }
+
+    if(parteFracionaria > 0){
+
+        resultado += ".";
+
+        resultado += fracDecimalParaHexadecimal(parteFracionaria);
+    }
+
+    return resultado;
+}
+
+double binarioCompletoParaDecimal(string binario){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < binario.size(); i++){
+
+        if(binario[i] == '.'){
+            encontrouPonto = true;
+        }
+
+        else if(!encontrouPonto){
+            parteInteira += binario[i];
+        }
+
+        else{
+            parteFracionaria += binario[i];
+        }
+    }
+
+    // CORREÇÃO: Adicionado tratamento caso a parte inteira esteja vazia (ex: .101)
+    if(parteInteira == "") parteInteira = "0";
+
+    double inteira = stod(binarioParaDecimal(parteInteira));
+
+    double fracao = fracBinarioParaDecimal(parteFracionaria);
+
+    return inteira + fracao;
+}
+
+double octalCompletoParaDecimal(string octal){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < octal.size(); i++){
+
+        if(octal[i] == '.'){
+            encontrouPonto = true;
+        }
+
+        else if(!encontrouPonto){
+            parteInteira += octal[i];
+        }
+
+        else{
+            parteFracionaria += octal[i];
+        }
+    }
+
+    // CORREÇÃO: Adicionado tratamento caso a parte inteira esteja vazia
+    if(parteInteira == "") parteInteira = "0";
+
+    double inteira = stod(octalParaDecimal(parteInteira));
+
+    double fracao = fracOctalParaDecimal(parteFracionaria);
+
+    return inteira + fracao;
+}
+
+double hexadecimalCompletoParaDecimal(string hexadecimal){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < hexadecimal.size(); i++){
+
+        if(hexadecimal[i] == '.'){
+            encontrouPonto = true;
+        }
+
+        else if(!encontrouPonto){
+            parteInteira += hexadecimal[i];
+        }
+
+        else{
+            parteFracionaria += hexadecimal[i];
+        }
+    }
+
+    // CORREÇÃO: Adicionado tratamento caso a parte inteira esteja vazia
+    if(parteInteira == "") parteInteira = "0";
+
+    double inteira = stod(hexadecimalParaDecimal(parteInteira));
+
+    double fracao = fracHexadecimalParaDecimal(parteFracionaria);
+
+    return inteira + fracao;
+}
+
+string binarioCompletoParaOctal(string binario){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < binario.size(); i++){
+
+        if(binario[i] == '.'){
+            encontrouPonto = true;
+        }
+        else if(!encontrouPonto){
+            parteInteira += binario[i];
+        }
+        else{
+            parteFracionaria += binario[i];
+        }
+    }
+
+    return binarioParaOctal(parteInteira) + "." + fracBinarioParaOctal(parteFracionaria);
+}
+
+string octalCompletoParaBinario(string octal){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < octal.size(); i++){
+
+        if(octal[i] == '.'){
+            encontrouPonto = true;
+        }
+        else if(!encontrouPonto){
+            parteInteira += octal[i];
+        }
+
+        else{
+            parteFracionaria += octal[i];
+        }
+    }
+
+    // CORREÇÃO: Para evitar que a parte inteira acumule zeros à esquerda (ex: "001" em vez de "1"),
+    // passamos pelo decimal antes. A fração continua usando a tabela de substituição direta.
+    string binInteiro = decimalParaBinario(stoll(octalParaDecimal(parteInteira)));
+    if(binInteiro == "") binInteiro = "0";
+
+    string binario = binInteiro;
+    if(parteFracionaria != "") {
+        binario += "." + octalParaBinario(parteFracionaria);
+    }
+
+    return binario;
+}
+
+string binarioCompletoParaHexadecimal(string binario){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < binario.size(); i++){
+
+        if(binario[i] == '.'){
+            encontrouPonto = true;
+        }
+        else if(!encontrouPonto){
+            parteInteira += binario[i];
+        }
+        else{
+            parteFracionaria += binario[i];
+        }
+    }
+
+    return binarioParaHexadecimal(parteInteira) + "." + fracBinarioParaHexadecimal(parteFracionaria);
+}
+
+string hexadecimalCompletoParaBinario(string hexadecimal){
+
+    string parteInteira = "";
+    string parteFracionaria = "";
+
+    bool encontrouPonto = false;
+
+    for(int i = 0; i < hexadecimal.size(); i++){
+
+        if(hexadecimal[i] == '.'){
+            encontrouPonto = true;
+        }
+        else if(!encontrouPonto){
+            parteInteira += hexadecimal[i];
+        }
+
+        else{
+            parteFracionaria += hexadecimal[i];
+        }
+    }
+
+    // CORREÇÃO: Passando a parte inteira por decimal para remover "000" extras à esquerda indesejados.
+    string binInteiro = decimalParaBinario(stoll(hexadecimalParaDecimal(parteInteira)));
+    if(binInteiro == "") binInteiro = "0";
+
+    string binario = binInteiro;
+    if(parteFracionaria != "") {
+        binario += "." + hexadecimalParaBinario(parteFracionaria);
+    }
+
+    return binario;
+}
+
+string octalCompletoParaHexadecimal(string octal){
+
+    string binario = octalCompletoParaBinario(octal);
+
+    // CORREÇÃO: Chamava 'binarioParaHexadecimal' (inteiro), alterado para chamar a versão 'Completo' (que aceita o ponto '.')
+    string hexadecimal = binarioCompletoParaHexadecimal(binario); 
+
+    return hexadecimal;
 
 }
 
+string hexadecimalCompletoParaOctal(string hexadecimal){
 
-// VALIDAR A ENTRADA DE ACORDO COM A BASE DE ORIGEM
+    string binario = hexadecimalCompletoParaBinario(hexadecimal);
 
+    // CORREÇÃO: Chamava 'binarioParaOctal' (inteiro), alterado para chamar a versão 'Completo' (que aceita o ponto '.')
+    string octal = binarioCompletoParaOctal(binario);
 
+    return octal;
 
-//SUPORTAR NÚMEROS FRACIONÁRIOS
+}
 
-
-
-// IMPRIMIR P TRACE DO ALGORITMO
-
-
-
-//MODO BATCH
-
-
-
-// MODO QUIZ
-
-
-
-// CALCULADORA DE MÁXIMOS
-
+// ======================================================
+// MAIN
+// ======================================================
 
 int main(){
 
-	//cout << "Olá, mundo";
+    cout << decimalParaBinario(35) << endl;
+    cout << decimalParaOctal(35) << endl;
+    cout << decimalParaHexadecimal(35) << endl;
 
-	decimalParaBinario(35);
-	cout << endl;
-	decimalParaOctal(35);
-	cout << endl;
-	decimalParaHexadecimal(35);
-	cout << endl;
-	binarioParaDecimal(100011);
-	cout << endl;
-	octalParaDecimal(43);
-	cout << endl;
-	hexadecimalParaDecimal("2AB");
-	 cout << endl;
-	binarioParaOctal("110111");
-	 cout << endl;
-	binarioParaHexadecimal("11110001"); 
-	 cout << endl;
-	cout << octalParaBinario("11");
-	 cout << endl;
-	hexadecimalParaBinario("1AF");
-	 cout << endl;
-	octalParaHexadecimal("735");
+    cout << binarioParaDecimal("100011") << endl;
+    cout << octalParaDecimal("43") << endl;
+    cout << hexadecimalParaDecimal("2AB") << endl;
 
+    cout << binarioParaOctal("110111") << endl;
+    cout << octalParaBinario("11") << endl;
 
-	return 0;
+    cout << binarioParaHexadecimal("11110001") << endl;
+    cout << hexadecimalParaBinario("1AF") << endl;
+
+    cout << octalParaHexadecimal("735") << endl;
+    cout << hexadecimalParaOctal("1AF") << endl;
+
+    cout << decimalCompletoParaBinario(12.625) << endl;
+    cout << decimalCompletoParaOctal(12.625) << endl;
+    cout << decimalCompletoParaHexadecimal(12.625) << endl;
+
+    cout << octalCompletoParaDecimal("17.52") << endl;
+    cout << hexadecimalCompletoParaDecimal("1A.A") << endl;
+
+    cout << binarioCompletoParaHexadecimal("1101.101") << endl;
+    cout << hexadecimalCompletoParaBinario("1A.F") << endl;
+
+    cout << octalCompletoParaHexadecimal("17.52") << endl;
+    cout << hexadecimalCompletoParaOctal("F.2A") << endl;
+
+	cout << binarioCompletoParaOctal("1101.101") << endl;
+
+    return 0;
 }
