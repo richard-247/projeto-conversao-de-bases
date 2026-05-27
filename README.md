@@ -1,8 +1,11 @@
 Alunos de Ciência da Computação da UFLA - Universidade Federal de Lavras
 
 Alunos: Luis Fellipe Dias Teodoro e Nycollas Richard Pereira dos Santos
+
 Turma: 10A
+
 Linguagem utilizada: C++
+
 Instruções de execução: No main.cpp, foram puxadas todas as funções propostas no trabalho, a nível de teste, com valores fixos
 
 Exemplos de uso: O programa pode ser usado pra fazer conversões entre todas as bases numéricas, e além disso, possui o modo passo a 
