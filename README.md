@@ -1,3 +1,5 @@
+link github: https://github.com/richard-247/projeto-conversao-de-bases
+
 Alunos de Ciência da Computação da UFLA - Universidade Federal de Lavras
 
 Alunos: Luis Fellipe Dias Teodoro e Nycollas Richard Pereira dos Santos
@@ -17,3 +19,5 @@ Limitações conhecidas: O programa não suporta números muito grandes, com pre
 pow() da biblioteca cmath, que realiza potenciação, e gera um valor double, isso causa alguma limitação quanto a precisão do número.
 
 URL do video no youtube: https://youtu.be/AR0w1O9M8Qs
+
+
