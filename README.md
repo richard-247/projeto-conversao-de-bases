@@ -15,3 +15,5 @@ pode ser obtido com n bits de todas as bases.
 
 Limitações conhecidas: O programa não suporta números muito grandes, com precisão maior que 16, por exemplo. Ademais, utiliza a função
 pow() da biblioteca cmath, que realiza potenciação, e gera um valor double, isso causa alguma limitação quanto a precisão do número.
+
+URL do video no youtube: https://youtu.be/AR0w1O9M8Qs
