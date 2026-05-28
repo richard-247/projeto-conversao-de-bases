@@ -8,7 +8,7 @@ using namespace std;
 // ======================================================
 // DECIMAL -> BINÁRIO/OCTAL/HEXADECIMAL (PARTE INTEIRA)
 // ======================================================
-
+// 110001 = 100011
 string decimalParaBinario(long int numero){
 
     if(numero == 0){
